@@ -54,16 +54,31 @@ export const config: WebdriverIO.Config = {
     // Sauce Labs platform configurator - a great tool to configure your capabilities:
     // https://saucelabs.com/platform/platform-configurator
     //
-    capabilities: [{
+    capabilities: [
+        {
         // capabilities for local Appium web tests on an Android Emulator
         platformName: 'Android',
         'appium:deviceName': 'automationTest',
         'appium:platformVersion': '14.0',
         'appium:automationName': 'UiAutomator2',
-        'appium:app': './android/app/build/outputs/apk/debug/app-debug.apk',
+        'appium:app': './android/app/build/outputs/apk/release/app-release.apk',
         'appium:appPackage': 'com.studioapp',
-        'appium:appActivity': 'com.studioapp.MainActivity'
-    }],
+        'appium:appActivity': 'com.studioapp.MainActivity',
+        'appium:noReset': true,
+        'appium:fullReset': false 
+        },
+        {
+        // capabilities for local Appium web tests on an iOS Emulator
+        platformName: 'iOS',
+        'appium:platformVersion': '18.2',
+        'appium:deviceName': 'iPhone 16',
+        'appium:automationName': 'XCUITest',
+        'appium:app': './ios/build/Build/Products/Debug-iphonesimulator/YourApp.app',
+        'appium:bundleId': 'com.yourcompany.yourapp',
+        'appium:noReset': true,
+        'appium:fullReset': false 
+       }
+    ],
 
     //
     // ===================

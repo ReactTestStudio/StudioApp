@@ -75,3 +75,34 @@ Read our [Upgrade Guide](https://ignitecookbook.com/docs/recipes/UpdatingIgnite)
 💬 Join us on [Slack](https://join.slack.com/t/infiniteredcommunity/shared_invite/zt-1f137np4h-zPTq_CbaRFUOR_glUFs2UA) to discuss.
 
 📰 Make our Editor-in-chief happy by [reading the React Native Newsletter](https://reactnativenewsletter.com/).
+
+## Appium for Android 🤖
+
+Navigate to your project's
+### `./android` folder
+and run the build process:
+
+### `./gradlew assembleRelease`
+
+This will generate a signed APK in:
+
+### `./android/app/build/outputs/apk/release/app-release.apk`
+
+Once the prod apk is generated launch the emulator with:
+
+### `npm run emu`
+
+after emulator is displayed we install the generated prod apk with:
+
+### `npm run andriod:app`
+
+then we started appium:
+
+### `npm run start:appium`
+
+and open Appium Inspector adding the capabilities to inspect the app launched through the emulator.
+
+
+
+
+
