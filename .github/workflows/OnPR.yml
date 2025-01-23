@@ -1,5 +1,5 @@
 name: Run PR
-run-name: RUN PR
+run-name: Run po
 on:
   pull_request:
     types: [opened,reopened,edited,synchronize]
