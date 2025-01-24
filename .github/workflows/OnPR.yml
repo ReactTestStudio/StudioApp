@@ -17,3 +17,19 @@ jobs:
         with:
           node-version: '22.1'
       - run: npm ci
+      - name: Prepare Android build
+        run: npm run android
+      - name: Clean Android build
+        run: npm run android:clean
+      - name: Build Android release
+        run: npm run android:release
+      - name: Install app in simulator
+        run: npm run emu:install:ReleaseApp
+
+
+      - name: Install Maestro
+        run: curl -Ls "https://get.maestro.mobile.dev" | bash
+      - name: Run Maestro
+        run: npm run test:maestro
+        env:
+          PATH: "$PATH:$HOME/.maestro/bin"
