@@ -18,6 +18,8 @@ jobs:
           node-version: '22.1'
       - run: npm ci
       - name: Prepare Android build
+        run: npm run start &
+      - name: Prepare Android build
         run: npm run android
       - name: Clean Android build
         run: npm run android:clean
