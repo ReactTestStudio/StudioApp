@@ -1,5 +1,5 @@
 name: Run PR
-run-name: Run po
+run-name: Run PR by ${{github.actor}}
 on:
   pull_request:
     types: [opened,reopened,edited,synchronize]
