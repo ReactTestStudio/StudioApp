@@ -33,5 +33,3 @@ jobs:
         run: curl -Ls "https://get.maestro.mobile.dev" | bash
       - name: Run Maestro
         run: npm run test:maestro
-        env:
-          PATH: "$PATH:$HOME/.maestro/bin"
