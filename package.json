@@ -26,8 +26,8 @@
     "bundle:web": "npx expo export --platform web",
     "serve:web": "npx serve dist",
     "prebuild:clean": "npx expo prebuild --clean",
-    "emu": "$ANDROID_HOME/emulator/emulator -avd automationTest -no-audio > /dev/null 2>&1 &",
-    "andriod:app": "adb install -r ./android/app/build/outputs/apk/release/app-release.apk && adb shell am start -n com.studioapp/.MainActivity",
+    "emu": "$ANDROID_HOME/emulator/emulator -avd automationTest -no-audio -wipe-data > /dev/null 2>&1 &",
+    "android:app": "adb install -r ./android/app/build/outputs/apk/release/app-release.apk && adb shell am start -n com.studioapp/.MainActivity",
     "start:appium": "npx appium",
     "wdio": "wdio run ./wdio.conf.ts"
   },

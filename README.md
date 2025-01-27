@@ -78,6 +78,8 @@ Read our [Upgrade Guide](https://ignitecookbook.com/docs/recipes/UpdatingIgnite)
 
 ## Appium for Android 🤖
 
+### `npm run android`
+
 Navigate to your project's
 ### `./android` folder
 and run the build process:
@@ -94,15 +96,10 @@ Once the prod apk is generated launch the emulator with:
 
 after emulator is displayed we install the generated prod apk with:
 
-### `npm run andriod:app`
+### `npm run android:app`
 
 then we started appium:
 
 ### `npm run start:appium`
 
 and open Appium Inspector adding the capabilities to inspect the app launched through the emulator.
-
-
-
-
-
