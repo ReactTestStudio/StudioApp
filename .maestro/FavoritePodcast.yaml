@@ -30,7 +30,21 @@ env:
     timeout: 50000
     speed: 40
     visibilityPercentage: 100
+- extendedWaitUntil:
+    visible: ${FAVORITES_TEXT}
+    timeout: 10000  
 - tapOn:
     text: ${FAVORITES_TEXT}
-- assertVisible: ${maestro.copiedText}
+- extendedWaitUntil:
+    visible: ${maestro.copiedText}
+    timeout: 10000  
+- extendedWaitUntil:
+    visible: ${FAVORITES_TEXT}
+    timeout: 10000  
+- tapOn:
+    text: ${FAVORITES_TEXT}
+- extendedWaitUntil:
+    visible: ${maestro.copiedText}
+    timeout: 10000  
+
 
