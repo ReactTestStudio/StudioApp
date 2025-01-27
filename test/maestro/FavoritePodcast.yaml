@@ -38,13 +38,6 @@ env:
 - extendedWaitUntil:
     visible: ${maestro.copiedText}
     timeout: 10000  
-- extendedWaitUntil:
-    visible: ${FAVORITES_TEXT}
-    timeout: 10000  
-- tapOn:
-    text: ${FAVORITES_TEXT}
-- extendedWaitUntil:
-    visible: ${maestro.copiedText}
-    timeout: 10000  
+
 
 
