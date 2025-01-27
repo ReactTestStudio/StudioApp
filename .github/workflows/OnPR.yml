@@ -16,7 +16,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22.1'
-      - run: npm ci
+      - name: Install node modules
+        run: npm ci
+      - name: Run basic jest tests
+        run: npm run test
+        
       - name: Prepare Android build
         run: npm run start &
       - name: Prepare Android build
@@ -29,3 +33,4 @@ jobs:
         run: npm run emu:install:ReleaseApp
       - name: Run Maestro
         run: npm run test:maestro
+
