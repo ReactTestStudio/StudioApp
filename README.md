@@ -80,11 +80,7 @@ Read our [Upgrade Guide](https://ignitecookbook.com/docs/recipes/UpdatingIgnite)
 
 ### `npm run android`
 
-Navigate to your project's
-### `./android` folder
-and run the build process:
-
-### `./gradlew assembleRelease`
+### `npm run android:release`
 
 This will generate a signed APK in:
 
@@ -92,14 +88,19 @@ This will generate a signed APK in:
 
 Once the prod apk is generated launch the emulator with:
 
-### `npm run emu`
+### `npm run emu:start`
 
 after emulator is displayed we install the generated prod apk with:
 
-### `npm run android:app`
+### `npm run emu:install:ReleaseApp`
 
 then we started appium:
 
 ### `npm run start:appium`
 
 and open Appium Inspector adding the capabilities to inspect the app launched through the emulator.
+
+to run the implemented tests run:
+
+### `npm run wdio`
+

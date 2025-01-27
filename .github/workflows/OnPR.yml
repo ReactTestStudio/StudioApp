@@ -1,0 +1,22 @@
+name: Run PR
+run-name: Run po
+on:
+  pull_request:
+    types: [opened,reopened,edited,synchronize]
+    branches: [ "main" ]
+    paths:
+      - '**'
+  workflow_dispatch:
+jobs:
+  Test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.1'
+      - name: Install node modules
+        run: npm ci
+      - name: Run basic jest tests
+        run: npm run test
