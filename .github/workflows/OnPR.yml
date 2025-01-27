@@ -27,9 +27,5 @@ jobs:
         run: npm run android:release
       - name: Install app in simulator
         run: npm run emu:install:ReleaseApp
-
-
-      - name: Install Maestro
-        run: curl -Ls "https://get.maestro.mobile.dev" | bash
       - name: Run Maestro
         run: npm run test:maestro
