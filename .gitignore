@@ -90,3 +90,14 @@ web-build/
 
 # Yarn
 .yarn/*
+
+# Ignore automatically generated files
+*.xml
+*.json
+*.txt
+
+# Ignore specific folders (if files are generated in specific directories)
+logs/
+output/
+test-results/
+allure-results/
