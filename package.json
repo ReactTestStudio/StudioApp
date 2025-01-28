@@ -30,13 +30,13 @@
     "android:release": "cd android && ./gradlew assembleRelease -x lint --build-cache",
     "android:fixed_for_pablo": "cd android ;export RUN=0 ; while [ $RUN -ne 99 ]; do let RUN=$RUN+1; echo \"ejecucion  $RUN\" ; sleep 10 ;  npm run android:release && echo \"funciono a la $RUN \" &&export RUN=99 ; done",
     "start:appium": "npx appium",
-    "wdio": "wdio run ./test/appium/config/wdio.conf.ts",
 
     "test": "npm run test:jest && npm run test:maestro && npm run test:appium",
     "test:jest": "jest",
     "test:jest:watch": "jest --watch",
     "test:maestro": "maestro test test/maestro/FavoritePodcast.yaml",
-    "test:appium" : "npm run wdio"
+    "test:appium" : "wdio run ./test/appium/config/wdio.conf.ts",
+    "test:local:appium" : "echo lol"
   },
   "dependencies": {
     "@expo-google-fonts/space-grotesk": "^0.2.2",
