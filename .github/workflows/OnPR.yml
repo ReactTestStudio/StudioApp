@@ -19,7 +19,7 @@ jobs:
       - name: Install node modules
         run: npm ci
       - name: Run basic jest tests
-        run: npm run test
+        run: npm run test:jest
         
       - name: Prepare Android build
         run: npm run start &
