@@ -69,12 +69,19 @@ jobs:
         run: npm run ios:build
   
 
-#  Test-Android-Build:
-#      runs-on: self-hosted
-#      steps:
-#      
-#      - name: Install app in simulator
-#        run: npm run emu:install:ReleaseApp
-#      - name: Run Maestro
-#        run: npm run test:maestro
+  Test-Android-Build:
+    runs-on: self-hosted
+    needs: Create-Android-Build
+    steps:
+      - name: Download file APK
+        uses: k0staa/download-gdrive-file-action@v1
+        with:
+          service-account-key-json: ${{ secrets.G_ACCOUNT_SECRET }}
+          download-file-name: app-release.apk
+          download-to: ./android/app/build/outputs/apk/release/
+            
+      - name: Install app in simulator
+        run: npm run emu:install:ReleaseApp
+      - name: Run Maestro
+        run: npm run test:maestro
 
