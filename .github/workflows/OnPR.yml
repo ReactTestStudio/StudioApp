@@ -49,8 +49,8 @@ jobs:
           credentials: ${{ secrets.G_ACCOUNT_SECRET }}
           filename: "./android/app/build/outputs/apk/release/app-release.apk"
           folderId: ${{ secrets.G_FOLDER_ID }}
-          name: "app-release.apk" # optional string
-          overwrite: "true" # optional boolean
+          name: "app-release.apk" 
+          overwrite: "true" 
 
 
   Create-iOS-Build:
@@ -66,8 +66,18 @@ jobs:
       - name: Prepare 
         run: npm run prebuild:clean:silent
       - name: Prepare ios build
-        run: npm run ios:build
-  
+        run: npm run ios:release
+      - name: zip app
+        run: zip -r ./app-release.zip ./ios/out/build/Release-iphoneos/*.app
+
+      - name: Upload to gdrive
+        uses: adityak74/google-drive-upload-git-action@main
+        with:
+          credentials: ${{ secrets.G_ACCOUNT_SECRET }}
+          filename: "./app-release.zip"
+          folderId: ${{ secrets.G_FOLDER_ID }}
+          name: "app-release.zip" 
+          overwrite: "true"
 
   Test-Android-Build:
     runs-on: self-hosted
