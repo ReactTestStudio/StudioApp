@@ -87,7 +87,8 @@ jobs:
           echo "$SERVICE_ACCOUNT_BASE64" | base64 --decode > service_account.json
           python3 .github/scripts/download.py
 
-      - name: RUN Python
+      - name: Clean
+        if: always()
         run: rm service_account.json
              
       - name: Install app in simulator
