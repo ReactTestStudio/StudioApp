@@ -73,12 +73,58 @@ jobs:
     runs-on: self-hosted
     needs: Create-Android-Build
     steps:
-      - name: Download file APK
-        uses: k0staa/download-gdrive-file-action@v1
+      - uses: actions/setup-python@v2
         with:
-          service-account-key-json: ${{ secrets.G_ACCOUNT_SECRET }}
-          download-file-name: app-release.apk
-          download-to: ./android/app/build/outputs/apk/release/
+          python-version: '3.x'
+
+      - run: |
+          python -m pip install --upgrade pip
+          pip install google-api-python-client
+
+      - name: RUN Python
+        env:
+          SERVICE_ACCOUNT_BASE64: ${{ secrets.G_ACCOUNT_SECRET }}
+        run: |
+          
+          echo "$SERVICE_ACCOUNT_BASE64" | base64 --decode > service_account.json
+
+          
+          python -c "
+          import base64
+          import json
+          from googleapiclient.discovery import build
+          from google.oauth2 import service_account
+          from googleapiclient.http import MediaIoBaseDownload
+          import io
+          import os
+
+          # Autenticación
+          SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
+          SERVICE_ACCOUNT_FILE = 'service_account.json'
+
+          creds = service_account.Credentials.from_service_account_file(
+            SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+          service = build('drive', 'v3', credentials=creds)
+
+          # ID del archivo que quieres descargar
+          file_id = 'ID_DEL_ARCHIVO'
+
+          request = service.files().get_media(fileId=file_id)
+
+          # Crear archivo local para el archivo descargado
+          fh = io.FileIO('archivo_descargado.ext', 'wb')
+
+          downloader = MediaIoBaseDownload(fh, request)
+          done = False
+          while done is False:
+            status, done = downloader.next_chunk()
+            print(f'Descargando {int(status.progress() * 100)}%.')
+            
+          print('Archivo descargado con éxito!')
+
+          # Limpiar archivo JSON temporal
+          os.remove('service_account.json')
+          "
             
       - name: Install app in simulator
         run: npm run emu:install:ReleaseApp
