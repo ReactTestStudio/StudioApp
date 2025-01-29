@@ -13,7 +13,7 @@ SERVICE_ACCOUNT_FILE = 'service_account.json'
 creds = service_account.Credentials.from_service_account_file(
   SERVICE_ACCOUNT_FILE, scopes=SCOPES)
 service = build('drive', 'v3', credentials=creds)
-file_name = 'app-release.apkt'
+file_name = 'app-release.apk'
 
 # Buscar el archivo por nombre
 results = service.files().list(
@@ -31,7 +31,7 @@ else:
     
     # Descargar el archivo
     request = service.files().get_media(fileId=file_id)
-    fh = io.FileIO(file_name, 'wb')
+    fh = io.FileIO('./android/app/build/outputs/apk/release/'+file_name, 'wb')
 
     downloader = MediaIoBaseDownload(fh, request)
     done = False
