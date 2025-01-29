@@ -43,6 +43,15 @@ jobs:
       - name: Build Android release
         run: npm run android:release
 
+      - name: Upload to gdrive
+        uses: adityak74/google-drive-upload-git-action@main
+        with:
+          credentials: ${{ secrets.G_ACCOUNT_SECRET }}
+          filename: "./android/app/build/outputs/apk/release/app-release.apk"
+          folderId: ${{ secrets.G_FOLDER_ID }}
+          name: "app-release.apk" # optional string
+          overwrite: "true" # optional boolean
+
 
   Create-iOS-Build:
     runs-on: macos-latest
