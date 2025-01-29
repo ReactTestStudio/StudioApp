@@ -48,6 +48,11 @@ jobs:
           node-version: '22.1'
       - name: Install node modules
         run: npm ci
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin' # See 'Supported distributions' for available options
+          java-version: '17'
+          cache: gradle
       - name: Prepare 
         run: npm run start &
       - name: Prepare ios build
