@@ -54,12 +54,10 @@ jobs:
           node-version: '22.1'
       - name: Install node modules
         run: npm ci
-
-
       - name: Prepare 
         run: npm run prebuild:clean:silent
- #     - name: Prepare ios build
- #       run: npm run ios
+      - name: Prepare ios build
+        run: npm run ios:build
   
 
 #  Test-Android-Build:
