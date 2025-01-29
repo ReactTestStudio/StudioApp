@@ -36,14 +36,12 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
           cache: gradle
-      - name: Prepare 
-        run: npm run start &
-#      - name: Prepare Android build
-#        run: npm run android
-#      - name: Clean Android build
-#        run: npm run android:clean
-#      - name: Build Android release
-#        run: npm run android:release
+
+      - name: Prepare to build
+        run: npm run prebuild:clean:silent
+
+      - name: Build Android release
+        run: npm run android:release
 
 
   Create-iOS-Build:
@@ -56,11 +54,10 @@ jobs:
           node-version: '22.1'
       - name: Install node modules
         run: npm ci
-      - name: Set Xcode version
-        run: sudo xcode-select -s /Applications/Xcode_16.app
+
 
       - name: Prepare 
-        run: npm run start &
+        run: npm run prebuild:clean:silent
  #     - name: Prepare ios build
  #       run: npm run ios
   
