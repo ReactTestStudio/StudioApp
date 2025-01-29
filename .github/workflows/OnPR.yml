@@ -20,76 +20,74 @@ jobs:
       - name: Run basic jest tests
         run: npm run test:jest
 
-  Create-Android-Build:
+  # Create-Android-Build:
 
-    runs-on: ubuntu-latest
-    needs: Test
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22.1'
-      - name: Install node modules
-        run: npm ci     
-      - uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-          cache: gradle
+  #   runs-on: ubuntu-latest
+  #   needs: Test
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: actions/setup-node@v4
+  #       with:
+  #         node-version: '22.1'
+  #     - name: Install node modules
+  #       run: npm ci     
+  #     - uses: actions/setup-java@v4
+  #       with:
+  #         distribution: 'temurin'
+  #         java-version: '17'
+  #         cache: gradle
 
-      - name: Prepare to build
-        run: npm run prebuild:clean:silent
+  #     - name: Prepare to build
+  #       run: npm run prebuild:clean:silent
 
-      - name: Build Android release
-        run: npm run android:release
+  #     - name: Build Android release
+  #       run: npm run android:release
 
-      - name: Upload to gdrive
-        uses: adityak74/google-drive-upload-git-action@main
-        with:
-          credentials: ${{ secrets.G_ACCOUNT_SECRET }}
-          filename: "./android/app/build/outputs/apk/release/app-release.apk"
-          folderId: ${{ secrets.G_FOLDER_ID }}
-          name: "app-release.apk" # optional string
-          overwrite: "true" # optional boolean
+  #     - name: Upload to gdrive
+  #       uses: adityak74/google-drive-upload-git-action@main
+  #       with:
+  #         credentials: ${{ secrets.G_ACCOUNT_SECRET }}
+  #         filename: "./android/app/build/outputs/apk/release/app-release.apk"
+  #         folderId: ${{ secrets.G_FOLDER_ID }}
+  #         name: "app-release.apk" # optional string
+  #         overwrite: "true" # optional boolean
 
 
-  Create-iOS-Build:
-    runs-on: macos-latest
-    needs: Test
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22.1'
-      - name: Install node modules
-        run: npm ci
-      - name: Prepare 
-        run: npm run prebuild:clean:silent
-      - name: Prepare ios build
-        run: npm run ios:build
+  # Create-iOS-Build:
+  #   runs-on: macos-latest
+  #   needs: Test
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: actions/setup-node@v4
+  #       with:
+  #         node-version: '22.1'
+  #     - name: Install node modules
+  #       run: npm ci
+  #     - name: Prepare 
+  #       run: npm run prebuild:clean:silent
+  #     - name: Prepare ios build
+  #       run: npm run ios:build
   
 
   Test-Android-Build:
     runs-on: self-hosted
-    needs: Create-Android-Build
     steps:
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
 
       - run: |
-          python -m pip install --upgrade pip
+          python3 -m venv .virtuaP
+          source virtuaP/bin/activate
+          python3 -m pip install --upgrade pip
           pip install google-api-python-client
 
       - name: RUN Python
         env:
           SERVICE_ACCOUNT_BASE64: ${{ secrets.G_ACCOUNT_SECRET }}
         run: |
-          
+          source virtuaP/bin/activate
           echo "$SERVICE_ACCOUNT_BASE64" | base64 --decode > service_account.json
 
           
-          python -c "
+          python3 -c "
           import base64
           import json
           from googleapiclient.discovery import build
@@ -105,7 +103,7 @@ jobs:
           creds = service_account.Credentials.from_service_account_file(
             SERVICE_ACCOUNT_FILE, scopes=SCOPES)
           service = build('drive', 'v3', credentials=creds)
-          file_name = 'app-release.apk'
+          file_name = 'app-release.apkt'
 
           # Buscar el archivo por nombre
           results = service.files().list(
