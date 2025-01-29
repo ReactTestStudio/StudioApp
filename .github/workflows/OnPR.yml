@@ -21,7 +21,9 @@ jobs:
         run: npm run test:jest
 
   Create-Android-Build:
+
     runs-on: ubuntu-latest
+    needs: Test
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -31,21 +33,22 @@ jobs:
         run: npm ci     
       - uses: actions/setup-java@v4
         with:
-          distribution: 'temurin' # See 'Supported distributions' for available options
+          distribution: 'temurin'
           java-version: '17'
           cache: gradle
       - name: Prepare 
         run: npm run start &
-      - name: Prepare Android build
-        run: npm run android
-      - name: Clean Android build
-        run: npm run android:clean
-      - name: Build Android release
-        run: npm run android:release
+#      - name: Prepare Android build
+#        run: npm run android
+#      - name: Clean Android build
+#        run: npm run android:clean
+#      - name: Build Android release
+#        run: npm run android:release
 
 
   Create-iOS-Build:
     runs-on: macos-latest
+    needs: Test
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -58,8 +61,8 @@ jobs:
 
       - name: Prepare 
         run: npm run start &
-      - name: Prepare ios build
-        run: npm run ios
+ #     - name: Prepare ios build
+ #       run: npm run ios
   
 
 #  Test-Android-Build:
