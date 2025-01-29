@@ -103,7 +103,7 @@ jobs:
         run: rm service_account.json
              
       - name: Install app in simulator
-        run: npm run emu:install:ReleaseApp
+        run: npm run emu:android:install:ReleaseApp
       - name: Run Maestro
         run: npm run test:maestro
 
