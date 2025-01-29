@@ -108,11 +108,15 @@ to run the implemented tests run:
 
 ### `npm run ios`
 
-### `npm run ios:prod`
+### `npm run ios:release`
 
 after "build success" message launch simulator
 
 ### `npm run emu:ios:start`
+
+and install prod release 
+
+### `npm run emu:ios:install:ReleaseApp`
 
 then we started appium:
 
