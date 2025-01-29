@@ -34,7 +34,7 @@
     "android:release": "cd android && ./gradlew assembleRelease -x lint --build-cache",
     "android:fixed_for_pablo": "cd android ;export RUN=0 ; while [ $RUN -ne 99 ]; do let RUN=$RUN+1; echo \"ejecucion  $RUN\" ; sleep 10 ;  npm run android:release && echo \"funciono a la $RUN \" &&export RUN=99 ; done",
     "start:appium": "npx appium",
-    "ios:build":"cd ios && xcodebuild -workspace StudioApp.xcworkspace -scheme StudioApp -sdk iphonesimulator -configuration Release",
+    "ios:release":"cd ios && xcodebuild -workspace StudioApp.xcworkspace -scheme StudioApp -sdk iphonesimulator -configuration Release",
 
     "test": "npm run test:jest && npm run test:maestro && npm run test:appium",
     "test:jest": "jest",
