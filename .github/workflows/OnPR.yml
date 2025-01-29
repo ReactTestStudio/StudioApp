@@ -1,5 +1,5 @@
 name: Run PR
-run-name: Run po
+run-name: Run PR by ${{github.actor}}
 on:
   pull_request:
     types: [opened,reopened,edited,synchronize]
@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 jobs:
   Test:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     
     steps:
       - uses: actions/checkout@v4
@@ -19,4 +19,18 @@ jobs:
       - name: Install node modules
         run: npm ci
       - name: Run basic jest tests
-        run: npm run test
+        run: npm run test:jest
+        
+      - name: Prepare Android build
+        run: npm run start &
+      - name: Prepare Android build
+        run: npm run android
+      - name: Clean Android build
+        run: npm run android:clean
+      - name: Build Android release
+        run: npm run android:release
+      - name: Install app in simulator
+        run: npm run emu:install:ReleaseApp
+      - name: Run Maestro
+        run: npm run test:maestro
+
