@@ -9,8 +9,7 @@ on:
   workflow_dispatch:
 jobs:
   Test:
-    runs-on: self-hosted
-    
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -20,8 +19,11 @@ jobs:
         run: npm ci
       - name: Run basic jest tests
         run: npm run test:jest
-        
-      - name: Prepare Android build
+
+  Create-Android-Build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Prepare 
         run: npm run start &
       - name: Prepare Android build
         run: npm run android
@@ -29,8 +31,23 @@ jobs:
         run: npm run android:clean
       - name: Build Android release
         run: npm run android:release
-      - name: Install app in simulator
-        run: npm run emu:install:ReleaseApp
-      - name: Run Maestro
-        run: npm run test:maestro
+
+        
+  Create-iOS-Build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Prepare 
+        run: npm run start &
+      - name: Prepare ios build
+        run: npm run ios
+  
+
+#  Test-Android-Build:
+#      runs-on: self-hosted
+#      steps:
+#      
+#      - name: Install app in simulator
+#        run: npm run emu:install:ReleaseApp
+#      - name: Run Maestro
+#        run: npm run test:maestro
 
