@@ -55,12 +55,14 @@ jobs:
           source virtuaP/bin/activate
           python3 -m pip install --upgrade pip
           pip install google-api-python-client
-          FILE_ID=$(python3 .github/scripts/drive.py upload ".android/app/build/outputs/apk/release/app-release.apk")
+          FILE_ID=$(python3 .github/scripts/drive.py upload "./android/app/build/outputs/apk/release/app-release.apk")
           echo "file_id=$FILE_ID" >> $GITHUB_ENV
           echo "::set-output name=file_id::$FILE_ID"
 
   Create-iOS-Build:
     runs-on: macos-latest
+    outputs:
+      file_id: ${{ steps.upload_step.outputs.file_id }}
     needs: Test
     steps:
       - uses: actions/checkout@v4
@@ -77,6 +79,7 @@ jobs:
         run: zip -r ./app-release.zip ./ios/out/Build/Products/Release-iphonesimulator/StudioApp.app
 
       - name: RUN Python
+        id: upload_step
         env:
           SERVICE_ACCOUNT_BASE64: ${{ secrets.G_ACCOUNT_SECRET }}
         run: |
@@ -84,7 +87,9 @@ jobs:
           source virtuaP/bin/activate
           python3 -m pip install --upgrade pip
           pip install google-api-python-client
-          python3 .github/scripts/drive.py upload "./app-release.zip"
+          FILE_ID=$python3 .github/scripts/drive.py upload "./app-release.zip")
+          echo "file_id=$FILE_ID" >> $GITHUB_ENV
+          echo "::set-output name=file_id::$FILE_ID"
 
 
   Test-Android-Build:
@@ -113,3 +118,30 @@ jobs:
       - name: Run Maestro
         run: npm run test:maestro:android
 
+  Test-iOS-Build:
+    runs-on: self-hosted
+    needs: Create-iOS-Build
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+
+
+      - name: RUN Python
+        env:
+          SERVICE_ACCOUNT_BASE64: ${{ secrets.G_ACCOUNT_SECRET }}
+        run: |
+          python3 -m venv virtuaP
+          source virtuaP/bin/activate
+          python3 -m pip install --upgrade pip
+          pip install google-api-python-client
+          FILE_ID=${{ needs.Create-iOS-Build.outputs.file_id }}
+          python3 .github/scripts/drive.py download $FILE_ID "./android/app/build/outputs/apk/release/"
+
+
+              
+      - name: Install app in simulator
+        run: npm run emu:ios:install:ReleaseApp
+      - name: Run Maestro
+        run: npm run test:maestro:ios
+      
+      
