@@ -24,6 +24,8 @@ jobs:
 
     runs-on: ubuntu-latest
     needs: Test
+    outputs:
+      file_id: ${{ steps.upload_step.outputs.file_id }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -43,15 +45,19 @@ jobs:
       - name: Build Android release
         run: npm run android:release
 
-      - name: Upload to gdrive
-        uses: adityak74/google-drive-upload-git-action@main
-        with:
-          credentials: ${{ secrets.G_ACCOUNT_SECRET }}
-          filename: "./android/app/build/outputs/apk/release/app-release.apk"
-          folderId: ${{ secrets.G_FOLDER_ID }}
-          name: "app-release.apk" 
-          overwrite: "true" 
 
+      - name: RUN Python
+        id: upload_step
+        env:
+          SERVICE_ACCOUNT_BASE64: ${{ secrets.G_ACCOUNT_SECRET }}
+        run: |
+          python3 -m venv virtuaP
+          source virtuaP/bin/activate
+          python3 -m pip install --upgrade pip
+          pip install google-api-python-client
+          FILE_ID=$(python3 .github/scripts/drive.py upload ".android/app/build/outputs/apk/release/app-release.apk")
+          echo "file_id=$FILE_ID" >> $GITHUB_ENV
+          echo "::set-output name=file_id::$FILE_ID"
 
   Create-iOS-Build:
     runs-on: macos-latest
@@ -70,41 +76,40 @@ jobs:
       - name: zip app
         run: zip -r ./app-release.zip ./ios/out/Build/Products/Release-iphonesimulator/StudioApp.app
 
-      - name: Upload to gdrive
-        uses: adityak74/google-drive-upload-git-action@main
-        with:
-          credentials: ${{ secrets.G_ACCOUNT_SECRET }}
-          filename: "./app-release.zip"
-          folderId: ${{ secrets.G_FOLDER_ID }}
-          name: "app-release.zip" 
-          overwrite: "true"
+      - name: RUN Python
+        env:
+          SERVICE_ACCOUNT_BASE64: ${{ secrets.G_ACCOUNT_SECRET }}
+        run: |
+          python3 -m venv virtuaP
+          source virtuaP/bin/activate
+          python3 -m pip install --upgrade pip
+          pip install google-api-python-client
+          python3 .github/scripts/drive.py upload "./app-release.zip"
 
 
-  # Test-Android-Build:
-  #   runs-on: self-hosted
-  #   needs: Create-Android-Build
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - run: |
-  #         python3 -m venv virtuaP
-  #         source virtuaP/bin/activate
-  #         python3 -m pip install --upgrade pip
-  #         pip install google-api-python-client
+  Test-Android-Build:
+    runs-on: self-hosted
+    needs: Create-Android-Build
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
 
-  #     - name: RUN Python
-  #       env:
-  #         SERVICE_ACCOUNT_BASE64: ${{ secrets.G_ACCOUNT_SECRET }}
-  #       run: |
-  #         source virtuaP/bin/activate
-  #         echo "$SERVICE_ACCOUNT_BASE64" | base64 --decode > service_account.json
-  #         python3 .github/scripts/download.py
 
-  #     - name: Clean
-  #       if: always()
-  #       run: rm service_account.json
+      - name: RUN Python
+        env:
+          SERVICE_ACCOUNT_BASE64: ${{ secrets.G_ACCOUNT_SECRET }}
+        run: |
+          python3 -m venv virtuaP
+          source virtuaP/bin/activate
+          python3 -m pip install --upgrade pip
+          pip install google-api-python-client
+          FILE_ID=${{ needs.Create-Android-Build.outputs.file_id }}
+          python3 .github/scripts/drive.py download $FILE_ID "./android/app/build/outputs/apk/release/"
+
+
              
-  #     - name: Install app in simulator
-  #       run: npm run emu:android:install:ReleaseApp
-  #     - name: Run Maestro
-  #       run: npm run test:maestro
+      - name: Install app in simulator
+        run: npm run emu:android:install:ReleaseApp
+      - name: Run Maestro
+        run: npm run test:maestro
 
