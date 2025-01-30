@@ -108,7 +108,7 @@ jobs:
           python3 -m pip install --upgrade pip
           pip install google-api-python-client
           FILE_ID=${{ needs.Create-Android-Build.outputs.file_id }}
-          python3 .github/scripts/drive.py download $FILE_ID "./android/app/build/outputs/apk/release/"
+          python3 .github/scripts/drive.py download $FILE_ID "./android/app/build/outputs/apk/release/app-release.apk"
 
 
              

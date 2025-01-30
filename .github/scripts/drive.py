@@ -31,7 +31,7 @@ def subir_archivo(file_path, folder_id=None):
     return file.get("id")  
         
 def descargar_archivo(file_id, output_path):
-    os.makedirs(output_path, exist_ok=True)
+#    os.makedirs(output_path, exist_ok=True)
     request = service.files().get_media(fileId=file_id)
     with open(output_path, "wb") as f:
         downloader = MediaIoBaseDownload(f, request)
