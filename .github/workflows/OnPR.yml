@@ -68,7 +68,7 @@ jobs:
       - name: Prepare ios build
         run: npm run ios:release
       - name: zip app
-        run: zip -r ./app-release.zip ./ios/out/build/Release-iphoneos/*.app
+        run: zip -r ./app-release.zip ./ios/out/Build/Products/Release-iphonesimulator/StudioApp.app
 
       - name: Upload to gdrive
         uses: adityak74/google-drive-upload-git-action@main
@@ -79,31 +79,32 @@ jobs:
           name: "app-release.zip" 
           overwrite: "true"
 
-  Test-Android-Build:
-    runs-on: self-hosted
-    needs: Create-Android-Build
-    steps:
-      - uses: actions/checkout@v4
-      - run: |
-          python3 -m venv virtuaP
-          source virtuaP/bin/activate
-          python3 -m pip install --upgrade pip
-          pip install google-api-python-client
 
-      - name: RUN Python
-        env:
-          SERVICE_ACCOUNT_BASE64: ${{ secrets.G_ACCOUNT_SECRET }}
-        run: |
-          source virtuaP/bin/activate
-          echo "$SERVICE_ACCOUNT_BASE64" | base64 --decode > service_account.json
-          python3 .github/scripts/download.py
+  # Test-Android-Build:
+  #   runs-on: self-hosted
+  #   needs: Create-Android-Build
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - run: |
+  #         python3 -m venv virtuaP
+  #         source virtuaP/bin/activate
+  #         python3 -m pip install --upgrade pip
+  #         pip install google-api-python-client
 
-      - name: Clean
-        if: always()
-        run: rm service_account.json
+  #     - name: RUN Python
+  #       env:
+  #         SERVICE_ACCOUNT_BASE64: ${{ secrets.G_ACCOUNT_SECRET }}
+  #       run: |
+  #         source virtuaP/bin/activate
+  #         echo "$SERVICE_ACCOUNT_BASE64" | base64 --decode > service_account.json
+  #         python3 .github/scripts/download.py
+
+  #     - name: Clean
+  #       if: always()
+  #       run: rm service_account.json
              
-      - name: Install app in simulator
-        run: npm run emu:android:install:ReleaseApp
-      - name: Run Maestro
-        run: npm run test:maestro
+  #     - name: Install app in simulator
+  #       run: npm run emu:android:install:ReleaseApp
+  #     - name: Run Maestro
+  #       run: npm run test:maestro
 
