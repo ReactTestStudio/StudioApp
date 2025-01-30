@@ -111,5 +111,5 @@ jobs:
       - name: Install app in simulator
         run: npm run emu:android:install:ReleaseApp
       - name: Run Maestro
-        run: npm run test:maestro
+        run: npm run test:maestro:android
 

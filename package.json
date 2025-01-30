@@ -41,7 +41,11 @@
     "test": "npm run test:jest && npm run test:maestro && npm run test:appium",
     "test:jest": "jest",
     "test:jest:watch": "jest --watch",
-    "test:maestro": "maestro test test/maestro/FavoritePodcast.yaml",
+    
+    "test:maestro": "npm run test:maestro:android && npm run test:maestro:ios",
+    "test:maestro:ios": "maestro --device \"$(xcrun simctl list devices booted | egrep '\\(Booted\\)' | egrep -o '\\([0-9A-F\\-]*\\)'| egrep -o '[0-9A-F\\-]*')\" test test/maestro/FavoritePodcast.yaml",
+    "test:maestro:android": "maestro --device \"$(adb devices | egrep -o '^[a-z0-9\\-]*')\" test test/maestro/FavoritePodcast.yaml",
+    
     "test:appium" : "wdio run ./test/appium/config/wdio.conf.ts",
     "test:local:appium" : "echo lol"
   },
