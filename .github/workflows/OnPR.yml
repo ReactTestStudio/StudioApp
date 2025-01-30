@@ -143,7 +143,7 @@ jobs:
         run: npm run emu:ios:install:ReleaseApp
       - name: Run Maestro
         env:
-          MAESTRO_DRIVER_STARTUP_TIMEOUT : 60000
+          MAESTRO_DRIVER_STARTUP_TIMEOUT : 600000
         run: npm run test:maestro:ios
       
       - run: npm run emu:ios:stop
