@@ -97,7 +97,7 @@ jobs:
     needs: Create-Android-Build
     steps:
       - uses: actions/checkout@v4
-
+      - run: npm run emu:ios:start 
 
       - name: RUN Python
         env:
@@ -143,4 +143,5 @@ jobs:
       - name: Run Maestro
         run: npm run test:maestro:ios
       
-      
+      - run: npm run emu:ios:stop
+        if: always()
