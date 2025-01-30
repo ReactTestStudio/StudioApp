@@ -97,7 +97,6 @@ jobs:
     needs: Create-Android-Build
     steps:
       - uses: actions/checkout@v4
-      - run: npm run emu:ios:start 
 
       - name: RUN Python
         env:
@@ -123,6 +122,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Start Sim
+        run: npm run emu:ios:start 
 
       - name: RUN Python
         env:
@@ -141,6 +142,8 @@ jobs:
       - name: Install app in simulator
         run: npm run emu:ios:install:ReleaseApp
       - name: Run Maestro
+        env:
+          MAESTRO_DRIVER_STARTUP_TIMEOUT : 60000
         run: npm run test:maestro:ios
       
       - run: npm run emu:ios:stop
