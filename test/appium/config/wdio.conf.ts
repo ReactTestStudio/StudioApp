@@ -75,14 +75,14 @@ export const config: WebdriverIO.Config = {
       // capabilities for local Appium web tests on an iOS Emulator
       "platformName": "iOS",
       "appium:platformVersion": "18.2",
-      "appium:deviceName": "iPhone 16",
+      "appium:deviceName": "iPhone 16 Pro",
       "appium:automationName": "XCUITest",
       "appium:app": path.join(
         basePath,
-        "../../../ios/build/Build/Products/Debug-iphonesimulator",
-        "YourApp.app",
+        "../../../ios/out/Build/Products/Release-iphonesimulator",
+        "StudioApp.app",
       ),
-      "appium:bundleId": "com.yourcompany.yourapp",
+      "appium:bundleId": "com.studioapp",
       "appium:noReset": true,
       "appium:fullReset": false,
     },

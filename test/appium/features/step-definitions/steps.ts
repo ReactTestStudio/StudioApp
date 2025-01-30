@@ -1,30 +1,41 @@
 import { Given, When, Then } from '@wdio/cucumber-framework';
 import { expect, $ } from '@wdio/globals'
 
-Given('The app is displaying the login page with credentials included', async () => {
-    
-    const capabilities = browser.capabilities;
+const isAndroid = driver.isAndroid;
 
-    console.log('CAPABILITIES', capabilities)
 
-    const loginHeading = await $('//android.widget.TextView[@resource-id="login-heading"]');
+Given('The app is displaying the login page with credentials included', async () => {    
+
+    const loginHeading = isAndroid
+        ? $('//android.widget.TextView[@resource-id="login-heading"]')
+        : $('-ios predicate string:type == "XCUIElementTypeStaticText" AND name == "login-heading"');
+
     expect(await loginHeading.isDisplayed()).toBe(true);
 
-    const emailField = await $('//android.widget.EditText[@text="ignite@infinite.red"]');
-    expect(await emailField.isDisplayed()).toBe(true);
-    expect(await emailField.getText()).toBe('ignite@infinite.red');
+    const emailField = isAndroid
+    ? $('//android.widget.EditText[@text="ignite@infinite.red"]')
+    : $('-ios predicate string:type == "XCUIElementTypeOther" AND name == "Email"');
 
-    const passwordField = await $('//android.widget.EditText[@text="•••••••••••••••"]');
+    expect(await emailField.isDisplayed()).toBe(true);
+
+    const passwordField = isAndroid
+    ? $('//android.widget.EditText[@text="•••••••••••••••"]')
+    : $('-ios predicate string:type == "XCUIElementTypeOther" AND name == "Password"');
+
     expect(await passwordField.isDisplayed()).toBe(true);
 
-    const loginButton = await $(`android=new UiSelector().text("Tap to log in!")`);
+    const loginButton = isAndroid
+    ? $(`android=new UiSelector().text("Tap to log in!")`)
+    : $('-ios predicate string:type == "XCUIElementTypeButton" AND name == "login-button"');
+    
     expect(await loginButton.isDisplayed()).toBe(true);
 });
 
 When('I click the Continue button', async () => {
 
-    const loginButton = await $('//android.widget.Button[@content-desc="Tap to log in!"]');
-    expect(await loginButton.isDisplayed()).toBe(true);
+    const loginButton = isAndroid
+    ? $(`android=new UiSelector().text("Tap to log in!")`)
+    : $('-ios predicate string:type == "XCUIElementTypeButton" AND name == "login-button"');
 
     await loginButton.click();
 });

@@ -88,11 +88,11 @@ This will generate a signed APK in:
 
 Once the prod apk is generated launch the emulator with:
 
-### `npm run emu:start`
+### `npm run emu:android:start`
 
 after emulator is displayed we install the generated prod apk with:
 
-### `npm run emu:install:ReleaseApp`
+### `npm run emu:android:install:ReleaseApp`
 
 then we started appium:
 
@@ -104,3 +104,26 @@ to run the implemented tests run:
 
 ### `npm run wdio`
 
+## Appium for iOS 🍎
+
+### `npm run ios`
+
+### `npm run ios:release`
+
+after "build success" message launch simulator
+
+### `npm run emu:ios:start`
+
+and install prod release 
+
+### `npm run emu:ios:install:ReleaseApp`
+
+then we started appium:
+
+### `npm run start:appium`
+
+and open Appium Inspector adding the capabilities to inspect the app launched through the emulator.
+
+to run the implemented tests run:
+
+### `npm run wdio`
