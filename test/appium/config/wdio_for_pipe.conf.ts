@@ -3,6 +3,10 @@ export const config: WebdriverIO.Config = {
   ...baseConfig,
   port: 4444,
 }
+config.capabilities.forEach((capability) => {
+  delete capability["appium:platformVersion"]
+  delete capability["appium:deviceName"]
+})
 //   capabilities: [
 //     {
 //       // capabilities for local Appium web tests on an Android Emulator
