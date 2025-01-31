@@ -10,7 +10,7 @@ if [[ -z "$BOOTED_DEVICES" ]]; then
     
     if [[ -n "$DEVICE_ID" ]]; then
         xcrun simctl boot $DEVICE_ID
-        echo "Simulador con ID $DEVICE_ID arrancando."
+        echo "Device ID $DEVICE_ID Booted"
     else
         echo "None able to boot."
     fi
