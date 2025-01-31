@@ -97,7 +97,12 @@ jobs:
     needs: Create-Android-Build
     steps:
       - uses: actions/checkout@v4
-
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.1'
+      - name: Install node modules
+        run: npm ci
+       
       - name: RUN Python
         env:
           SERVICE_ACCOUNT_BASE64: ${{ secrets.G_ACCOUNT_SECRET }}
@@ -109,8 +114,7 @@ jobs:
           FILE_ID=${{ needs.Create-Android-Build.outputs.file_id }}
           python3 .github/scripts/drive.py download $FILE_ID "./android/app/build/outputs/apk/release/app-release.apk"
 
-
-             
+      
       - name: Install app in simulator
         run: npm run emu:android:install:ReleaseApp
       - name: Run Maestro
@@ -122,8 +126,12 @@ jobs:
   #   runs-on: self-hosted
   #   needs: Create-iOS-Build
   #   steps:
-  #     - uses: actions/checkout@v4
-
+    # - uses: actions/checkout@v4
+    # - uses: actions/setup-node@v4
+    #   with:
+    #     node-version: '22.1'
+    # - name: Install node modules
+    #   run: npm ci
 
   #     - name: Start Sim ( needed until we have a better solution )
   #       run: sh  .github/scripts/sim.sh

@@ -20,7 +20,7 @@ credentials = Credentials.from_service_account_info(creds_dict, scopes=["https:/
 service = build("drive", "v3", credentials=credentials)
 
 
-def subir_archivo(file_path, folder_id=None):
+def upload_file(file_path, folder_id=None):
     file_metadata = {"name": os.path.basename(file_path)}
     if folder_id:
         file_metadata["parents"] = [folder_id]
@@ -30,7 +30,7 @@ def subir_archivo(file_path, folder_id=None):
     print(f"✅ File uploaded with ID: {file.get('id')}")
     return file.get("id")  
         
-def descargar_archivo(file_id, output_path):
+def download_file(file_id, output_path):
     dir, file = os.path.split(output_path)
     os.makedirs(dir, exist_ok=True)
     request = service.files().get_media(fileId=file_id)
@@ -42,6 +42,7 @@ def descargar_archivo(file_id, output_path):
             print(f"🔄 Download {int(status.progress() * 100)}% ")
 
     print(f"✅ File downloaded to : {output_path}")
+def remove_file (file_id): 
     try:
         service.files().delete(fileId=file_id).execute()
         print(f"File with ID {file_id} deleted successful.")
@@ -59,7 +60,7 @@ action = sys.argv[1].lower()
 
 if action == "upload":
     file_path = sys.argv[2]
-    subir_archivo(file_path)
+    upload_file(file_path)
 
 elif action == "download":
     if len(sys.argv) < 4:
@@ -67,7 +68,14 @@ elif action == "download":
         sys.exit(1)
     file_id = sys.argv[2]
     output_path = sys.argv[3]
-    descargar_archivo(file_id, output_path)
+    download_file(file_id, output_path)
+elif action == "remove":
+    if len(sys.argv) < 3:
+        print("ERROR: File id is required for remove.")
+        sys.exit(1)
+    file_id = sys.argv[2]
+    remove_file(file_id)
+
 
 else:
     print("ERROR: Unknow command use 'upload' o 'download'.")
