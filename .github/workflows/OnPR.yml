@@ -121,6 +121,11 @@ jobs:
         run: npm run test:maestro:android
       - name: Run Appium
         run: npm run test:appium:pipe:android
+      - name: remove App in Drive
+        if: always()
+        env:
+          SERVICE_ACCOUNT_BASE64: ${{ secrets.G_ACCOUNT_SECRET }}
+        run: python3 .github/scripts/drive.py remove $FILE_ID
 
   # Test-iOS-Build:
   #   runs-on: self-hosted
@@ -156,5 +161,10 @@ jobs:
   #     - name: Run Maestro
   #       env:
   #         MAESTRO_DRIVER_STARTUP_TIMEOUT : 600000
-  #       run: npm run test:maestro:ios
+#       run: npm run test:maestro:ios
+# - name: remove App in Drive
+#   if: always()
+#   env:
+#     SERVICE_ACCOUNT_BASE64: ${{ secrets.G_ACCOUNT_SECRET }}
+#   run: python3 .github/scripts/drive.py remove $FILE_ID
       
