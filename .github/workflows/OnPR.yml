@@ -114,18 +114,25 @@ jobs:
           FILE_ID=${{ needs.Create-Android-Build.outputs.file_id }}
           python3 .github/scripts/drive.py download $FILE_ID "./android/app/build/outputs/apk/release/app-release.apk"
 
-      
       - name: Install app in simulator
         run: npm run emu:android:install:ReleaseApp
       - name: Run Maestro
         run: npm run test:maestro:android
+      - name: Install app in simulator
+        run: npm run emu:android:install:ReleaseApp
       - name: Run Appium
         run: npm run test:appium:pipe:android
       - name: remove App in Drive
         if: always()
         env:
           SERVICE_ACCOUNT_BASE64: ${{ secrets.G_ACCOUNT_SECRET }}
-        run: python3 .github/scripts/drive.py remove $FILE_ID
+        run: |
+          python3 -m venv virtuaP
+          source virtuaP/bin/activate
+          python3 -m pip install --upgrade pip
+          pip install google-api-python-client
+          FILE_ID=${{ needs.Create-iOS-Build.outputs.file_id }}
+          python3 .github/scripts/drive.py remove $FILE_ID
 
   # Test-iOS-Build:
   #   runs-on: self-hosted
@@ -166,5 +173,11 @@ jobs:
 #   if: always()
 #   env:
 #     SERVICE_ACCOUNT_BASE64: ${{ secrets.G_ACCOUNT_SECRET }}
-#   run: python3 .github/scripts/drive.py remove $FILE_ID
+#   run: |
+  #         python3 -m venv virtuaP
+  #         source virtuaP/bin/activate
+  #         python3 -m pip install --upgrade pip
+  #         pip install google-api-python-client
+  #         FILE_ID=${{ needs.Create-iOS-Build.outputs.file_id }}
+  #         python3 .github/scripts/drive.py remove $FILE_ID
       
