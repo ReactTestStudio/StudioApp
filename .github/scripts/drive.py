@@ -52,6 +52,7 @@ if len(sys.argv) < 3:
     print("Who:")
     print("  Upload:   python script.py upload path_to_file")
     print("  Download:   python script.py download file_id output_path")
+    print("  Download:   python script.py remove file_id")
     sys.exit(1)
 
 action = sys.argv[1].lower()
@@ -67,6 +68,7 @@ elif action == "download":
     file_id = sys.argv[2]
     output_path = sys.argv[3]
     download_file(file_id, output_path)
+    
 elif action == "remove":
     if len(sys.argv) < 3:
         print("ERROR: File id is required for remove.")
