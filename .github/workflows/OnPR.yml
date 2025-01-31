@@ -128,7 +128,7 @@ jobs:
           SERVICE_ACCOUNT_BASE64: ${{ secrets.G_ACCOUNT_SECRET }}
         run: |
           source virtuaP/bin/activate
-          FILE_ID=${{ needs.Create-Create-Android-Build.outputs.file_id }}
+          FILE_ID=${{ needs.Create-Android-Build.outputs.file_id }}
           python3 .github/scripts/drive.py remove $FILE_ID
 
   Test-iOS-Build:
