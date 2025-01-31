@@ -42,12 +42,10 @@ def download_file(file_id, output_path):
             print(f"🔄 Download {int(status.progress() * 100)}% ")
 
     print(f"✅ File downloaded to : {output_path}")
+
 def remove_file (file_id): 
-    try:
-        service.files().delete(fileId=file_id).execute()
-        print(f"File with ID {file_id} deleted successful.")
-    except Exception as e:
-        print(f"Error deleting the file: {e}")
+    service.files().delete(fileId=file_id).execute()
+    print(f"File with ID {file_id} deleted successful.")
 
 
 if len(sys.argv) < 3:

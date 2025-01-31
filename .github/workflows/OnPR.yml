@@ -59,37 +59,37 @@ jobs:
           echo "file_id=$FILE_ID" >> $GITHUB_ENV
           echo "::set-output name=file_id::$FILE_ID"
 
-  # Create-iOS-Build:
-  #   runs-on: macos-latest
-  #   outputs:
-  #     file_id: ${{ steps.upload_step.outputs.file_id }}
-  #   needs: Test
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: actions/setup-node@v4
-  #       with:
-  #         node-version: '22.1'
-  #     - name: Install node modules
-  #       run: npm ci
-  #     - name: Prepare 
-  #       run: npm run prebuild:clean:silent
-  #     - name: Prepare ios build
-  #       run: npm run ios:release
-  #     - name: zip app
-  #       run: zip -r ./app-release.zip ./ios/out/Build/Products/Release-iphonesimulator/StudioApp.app
+  Create-iOS-Build:
+    runs-on: macos-latest
+    outputs:
+      file_id: ${{ steps.upload_step.outputs.file_id }}
+    needs: Test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.1'
+      - name: Install node modules
+        run: npm ci
+      - name: Prepare 
+        run: npm run prebuild:clean:silent
+      - name: Prepare ios build
+        run: npm run ios:release
+      - name: zip app
+        run: zip -r ./app-release.zip ./ios/out/Build/Products/Release-iphonesimulator/StudioApp.app
 
-  #     - name: RUN Python
-  #       id: upload_step
-  #       env:
-  #         SERVICE_ACCOUNT_BASE64: ${{ secrets.G_ACCOUNT_SECRET }}
-  #       run: |
-  #         python3 -m venv virtuaP
-  #         source virtuaP/bin/activate
-  #         python3 -m pip install --upgrade pip
-  #         pip install google-api-python-client
-  #         FILE_ID=$(python3 .github/scripts/drive.py upload "./app-release.zip"|egrep -o "[a-zA-Z0-9_-]*$")
-  #         echo "file_id=$FILE_ID" >> $GITHUB_ENV
-  #         echo "::set-output name=file_id::$FILE_ID"
+      - name: RUN Python
+        id: upload_step
+        env:
+          SERVICE_ACCOUNT_BASE64: ${{ secrets.G_ACCOUNT_SECRET }}
+        run: |
+          python3 -m venv virtuaP
+          source virtuaP/bin/activate
+          python3 -m pip install --upgrade pip
+          pip install google-api-python-client
+          FILE_ID=$(python3 .github/scripts/drive.py upload "./app-release.zip"|egrep -o "[a-zA-Z0-9_-]*$")
+          echo "file_id=$FILE_ID" >> $GITHUB_ENV
+          echo "::set-output name=file_id::$FILE_ID"
 
 
   Test-Android-Build:
@@ -127,57 +127,51 @@ jobs:
         env:
           SERVICE_ACCOUNT_BASE64: ${{ secrets.G_ACCOUNT_SECRET }}
         run: |
-          python3 -m venv virtuaP
           source virtuaP/bin/activate
-          python3 -m pip install --upgrade pip
-          pip install google-api-python-client
           FILE_ID=${{ needs.Create-iOS-Build.outputs.file_id }}
           python3 .github/scripts/drive.py remove $FILE_ID
 
-  # Test-iOS-Build:
-  #   runs-on: self-hosted
-  #   needs: Create-iOS-Build
-  #   steps:
-    # - uses: actions/checkout@v4
-    # - uses: actions/setup-node@v4
-    #   with:
-    #     node-version: '22.1'
-    # - name: Install node modules
-    #   run: npm ci
+  Test-iOS-Build:
+    runs-on: self-hosted
+    needs: Create-iOS-Build
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '22.1'
+    - name: Install node modules
+      run: npm ci
 
-  #     - name: Start Sim ( needed until we have a better solution )
-  #       run: sh  .github/scripts/sim.sh
+    - name: Start Sim ( needed until we have a better solution )
+      run: sh  .github/scripts/sim.sh
 
 
-  #     - name: RUN Python
-  #       env:
-  #         SERVICE_ACCOUNT_BASE64: ${{ secrets.G_ACCOUNT_SECRET }}
-  #       run: |
-  #         python3 -m venv virtuaP
-  #         source virtuaP/bin/activate
-  #         python3 -m pip install --upgrade pip
-  #         pip install google-api-python-client
-  #         FILE_ID=${{ needs.Create-iOS-Build.outputs.file_id }}
-  #         python3 .github/scripts/drive.py download $FILE_ID "./app-release.zip"
-  #     - name: Unzip app
-  #       run: unzip -o ./app-release.zip
+    - name: RUN Python
+      env:
+        SERVICE_ACCOUNT_BASE64: ${{ secrets.G_ACCOUNT_SECRET }}
+      run: |
+        python3 -m venv virtuaP
+        source virtuaP/bin/activate
+        python3 -m pip install --upgrade pip
+        pip install google-api-python-client
+        FILE_ID=${{ needs.Create-iOS-Build.outputs.file_id }}
+        python3 .github/scripts/drive.py download $FILE_ID "./app-release.zip"
+    - name: Unzip app
+      run: unzip -o ./app-release.zip
 
-              
-  #     - name: Install app in simulator
-  #       run: npm run emu:ios:install:ReleaseApp
-  #     - name: Run Maestro
-  #       env:
-  #         MAESTRO_DRIVER_STARTUP_TIMEOUT : 600000
-#       run: npm run test:maestro:ios
-# - name: remove App in Drive
-#   if: always()
-#   env:
-#     SERVICE_ACCOUNT_BASE64: ${{ secrets.G_ACCOUNT_SECRET }}
-#   run: |
-  #         python3 -m venv virtuaP
-  #         source virtuaP/bin/activate
-  #         python3 -m pip install --upgrade pip
-  #         pip install google-api-python-client
-  #         FILE_ID=${{ needs.Create-iOS-Build.outputs.file_id }}
-  #         python3 .github/scripts/drive.py remove $FILE_ID
-      
+            
+    - name: Install app in simulator
+      run: npm run emu:ios:install:ReleaseApp
+    - name: Run Maestro
+      env:
+        MAESTRO_DRIVER_STARTUP_TIMEOUT : 600000
+      run: npm run test:maestro:ios
+    - name: remove App in Drive
+      if: always()
+      env:
+        SERVICE_ACCOUNT_BASE64: ${{ secrets.G_ACCOUNT_SECRET }}
+      run: |
+              source virtuaP/bin/activate
+              FILE_ID=${{ needs.Create-iOS-Build.outputs.file_id }}
+              python3 .github/scripts/drive.py remove $FILE_ID
+    
