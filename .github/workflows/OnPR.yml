@@ -93,7 +93,7 @@ jobs:
 
 
   Test-Android-Build:
-    runs-on: self-hosted
+    runs-on: [ self-hosted, Android ]
     needs: Create-Android-Build
     steps:
       - uses: actions/checkout@v4
@@ -107,6 +107,9 @@ jobs:
         env:
           SERVICE_ACCOUNT_BASE64: ${{ secrets.G_ACCOUNT_SECRET }}
         run: |
+          #Remove This next interaction
+          npm run emu:ios:stop
+
           python3 -m venv virtuaP
           source virtuaP/bin/activate
           python3 -m pip install --upgrade pip
@@ -132,7 +135,7 @@ jobs:
           python3 .github/scripts/drive.py remove $FILE_ID
 
   Test-iOS-Build:
-    runs-on: self-hosted
+    runs-on: [ self-hosted, iOS ]
     needs: Create-iOS-Build
     steps:
     - uses: actions/checkout@v4
@@ -142,8 +145,8 @@ jobs:
     - name: Install node modules
       run: npm ci
 
-    - name: Start Sim ( needed until we have a better solution )
-      run: sh  .github/scripts/sim.sh
+#    - name: Start Sim ( needed until we have a better solution )
+#      run: sh  .github/scripts/sim.sh
 
 
     - name: RUN Python
@@ -171,7 +174,8 @@ jobs:
       env:
         SERVICE_ACCOUNT_BASE64: ${{ secrets.G_ACCOUNT_SECRET }}
       run: |
+              #npm run emu:ios:stop
               source virtuaP/bin/activate
               FILE_ID=${{ needs.Create-iOS-Build.outputs.file_id }}
               python3 .github/scripts/drive.py remove $FILE_ID
-    
+
