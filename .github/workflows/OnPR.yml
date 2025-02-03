@@ -137,7 +137,7 @@ jobs:
 
   Test-iOS-Build:
     runs-on: [ self-hosted, iOS ]
-    needs: Create-iOS-Build
+#    needs: Create-iOS-Build
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
