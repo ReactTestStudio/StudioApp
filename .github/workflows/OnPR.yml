@@ -155,7 +155,7 @@ jobs:
         source virtuaP/bin/activate
         python3 -m pip install --upgrade pip
         pip install google-api-python-client
-        FILE_ID= 1odkxr0J0iR1QUZxDpt5470hBaaWkkQwh
+        FILE_ID=1odkxr0J0iR1QUZxDpt5470hBaaWkkQwh
 
         # ${{ needs.Create-iOS-Build.outputs.file_id }}
         python3 .github/scripts/drive.py download $FILE_ID "./app-release.zip"
