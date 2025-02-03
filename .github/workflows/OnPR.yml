@@ -146,10 +146,6 @@ jobs:
     - name: Install node modules
       run: npm ci
 
-#    - name: Start Sim ( needed until we have a better solution )
-#      run: sh  .github/scripts/sim.sh
-
-
     - name: RUN Python
       env:
         SERVICE_ACCOUNT_BASE64: ${{ secrets.G_ACCOUNT_SECRET }}
@@ -166,6 +162,9 @@ jobs:
             
     - name: Install app in simulator
       run: npm run emu:ios:install:ReleaseApp
+    - name: Run Appium
+      run: npm run test:appium:ios
+
     - name: Run Maestro
       env:
         MAESTRO_DRIVER_STARTUP_TIMEOUT : 600000
@@ -175,7 +174,7 @@ jobs:
       env:
         SERVICE_ACCOUNT_BASE64: ${{ secrets.G_ACCOUNT_SECRET }}
       run: |
-              #npm run emu:ios:stop
+ 
               source virtuaP/bin/activate
               FILE_ID=${{ needs.Create-iOS-Build.outputs.file_id }}
               python3 .github/scripts/drive.py remove $FILE_ID

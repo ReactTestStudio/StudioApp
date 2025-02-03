@@ -48,7 +48,8 @@
     "test:maestro:android": "maestro --device \"$(adb devices | egrep -o '^[a-z0-9\\-]*')\" test test/maestro/FavoritePodcast.yaml",
     
     "test:appium" : "wdio run ./test/appium/config/wdio.conf.ts",
-    "test:appium:pipe:android" : "wdio run ./test/appium/config/wdio_for_pipe.conf.ts --platform=android"
+    "test:appium:pipe:android" : "wdio run ./test/appium/config/wdio_for_pipe.conf.ts --platform=android",
+    "test:appium:ios" : "wdio run ./test/appium/config/wdio.conf.ts --platform=ios"
   },
   "dependencies": {
     "@expo-google-fonts/space-grotesk": "^0.2.2",
