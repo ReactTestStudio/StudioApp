@@ -1,34 +1,33 @@
 import { Given, When, Then } from '@wdio/cucumber-framework';
 import { expect, $ } from '@wdio/globals'
+import { LoginScreen } from '../screen-objects/login.screen';
 
 const isAndroid = driver.isAndroid;
 
+interface Status {
+    screen?: string;
+}
+const status: Status = {};
 
-Given('The app is displaying the login page with credentials included', async () => {    
+Given("The app is displaying the login page with credentials included", async () => {
+    status.screen = "login";
 
-    const loginHeading = isAndroid
-        ? $('//android.widget.TextView[@resource-id="login-heading"]')
-        : $('-ios predicate string:type == "XCUIElementTypeStaticText" AND name == "login-heading"');
+    console.log("Checking Login Screen is displayed");
+    const whatToSeek = LoginScreen[status.screen].getWhatToSeek();
+    const findWhatToSeek = await $(whatToSeek);
+    await expect(findWhatToSeek).toBeDisplayed();
 
-    expect(await loginHeading.isDisplayed()).toBe(true);
+    console.log("Checking Email Field is displayed");
+    const emailField = await $(LoginScreen[status.screen].getWhereToWrite("email"));
+    await expect(emailField).toBeDisplayed();
 
-    const emailField = isAndroid
-    ? $('//android.widget.EditText[@text="ignite@infinite.red"]')
-    : $('-ios predicate string:type == "XCUIElementTypeOther" AND name == "Email"');
+    console.log("Checking Password Field is displayed");
+    const passwordField = await $(LoginScreen[status.screen].getWhereToWrite("password"));
+    await expect(passwordField).toBeDisplayed();
 
-    expect(await emailField.isDisplayed()).toBe(true);
-
-    const passwordField = isAndroid
-    ? $('//android.widget.EditText[@text="•••••••••••••••"]')
-    : $('-ios predicate string:type == "XCUIElementTypeOther" AND name == "Password"');
-
-    expect(await passwordField.isDisplayed()).toBe(true);
-
-    const loginButton = isAndroid
-    ? $(`android=new UiSelector().text("Tap to log in!")`)
-    : $('-ios predicate string:type == "XCUIElementTypeButton" AND name == "login-button"');
-    
-    expect(await loginButton.isDisplayed()).toBe(true);
+    console.log("Checking Login Button is displayed");
+    const loginButton = await $(LoginScreen[status.screen].getWhereToTapOn("login"));
+    await expect(loginButton).toBeDisplayed();
 });
 
 When('I click the Continue button', async () => {
