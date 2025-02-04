@@ -97,7 +97,12 @@ jobs:
     needs: Create-Android-Build
     steps:
       - uses: actions/checkout@v4
-
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.1'
+      - name: Install node modules
+        run: npm ci
+       
       - name: RUN Python
         env:
           SERVICE_ACCOUNT_BASE64: ${{ secrets.G_ACCOUNT_SECRET }}
@@ -109,42 +114,64 @@ jobs:
           FILE_ID=${{ needs.Create-Android-Build.outputs.file_id }}
           python3 .github/scripts/drive.py download $FILE_ID "./android/app/build/outputs/apk/release/app-release.apk"
 
-
-             
       - name: Install app in simulator
         run: npm run emu:android:install:ReleaseApp
       - name: Run Maestro
         run: npm run test:maestro:android
+      - name: Install app in simulator
+        run: npm run emu:android:install:ReleaseApp
+      - name: Run Appium
+        run: npm run test:appium:pipe:android
+      - name: remove App in Drive
+        if: always()
+        env:
+          SERVICE_ACCOUNT_BASE64: ${{ secrets.G_ACCOUNT_SECRET }}
+        run: |
+          source virtuaP/bin/activate
+          FILE_ID=${{ needs.Create-Android-Build.outputs.file_id }}
+          python3 .github/scripts/drive.py remove $FILE_ID
 
   Test-iOS-Build:
     runs-on: self-hosted
     needs: Create-iOS-Build
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '22.1'
+    - name: Install node modules
+      run: npm ci
 
-      - name: Start Sim
-        run: npm run emu:ios:start 
+    - name: Start Sim ( needed until we have a better solution )
+      run: sh  .github/scripts/sim.sh
 
-      - name: RUN Python
-        env:
-          SERVICE_ACCOUNT_BASE64: ${{ secrets.G_ACCOUNT_SECRET }}
-        run: |
-          python3 -m venv virtuaP
-          source virtuaP/bin/activate
-          python3 -m pip install --upgrade pip
-          pip install google-api-python-client
-          FILE_ID=${{ needs.Create-iOS-Build.outputs.file_id }}
-          python3 .github/scripts/drive.py download $FILE_ID "./app-release.zip"
-      - name: Unzip app
-        run: unzip -o ./app-release.zip
 
-              
-      - name: Install app in simulator
-        run: npm run emu:ios:install:ReleaseApp
-      - name: Run Maestro
-        env:
-          MAESTRO_DRIVER_STARTUP_TIMEOUT : 600000
-        run: npm run test:maestro:ios
-      
-      - run: npm run emu:ios:stop
-        if: always()
+    - name: RUN Python
+      env:
+        SERVICE_ACCOUNT_BASE64: ${{ secrets.G_ACCOUNT_SECRET }}
+      run: |
+        python3 -m venv virtuaP
+        source virtuaP/bin/activate
+        python3 -m pip install --upgrade pip
+        pip install google-api-python-client
+        FILE_ID=${{ needs.Create-iOS-Build.outputs.file_id }}
+        python3 .github/scripts/drive.py download $FILE_ID "./app-release.zip"
+    - name: Unzip app
+      run: unzip -o ./app-release.zip
+
+            
+    - name: Install app in simulator
+      run: npm run emu:ios:install:ReleaseApp
+    - name: Run Maestro
+      env:
+        MAESTRO_DRIVER_STARTUP_TIMEOUT : 600000
+      run: npm run test:maestro:ios
+    - name: remove App in Drive
+      if: always()
+      env:
+        SERVICE_ACCOUNT_BASE64: ${{ secrets.G_ACCOUNT_SECRET }}
+      run: |
+              source virtuaP/bin/activate
+              FILE_ID=${{ needs.Create-iOS-Build.outputs.file_id }}
+              python3 .github/scripts/drive.py remove $FILE_ID
+    

@@ -1,5 +1,7 @@
 import path from "path"
+const args = require("yargs").argv
 const basePath = path.resolve(__dirname)
+const platform = args.platform || "both"
 export const config: WebdriverIO.Config = {
   //
   // ====================
@@ -54,9 +56,9 @@ export const config: WebdriverIO.Config = {
   // Sauce Labs platform configurator - a great tool to configure your capabilities:
   // https://saucelabs.com/platform/platform-configurator
   //
-  capabilities: [
-    {
-      // capabilities for local Appium web tests on an Android Emulator
+
+  capabilities: (() => {
+    const androidCapabilities = {
       "platformName": "android",
       "appium:deviceName": "automationTest",
       "appium:platformVersion": "14.0",
@@ -70,9 +72,9 @@ export const config: WebdriverIO.Config = {
       "appium:appActivity": "com.studioapp.MainActivity",
       "appium:noReset": true,
       "appium:fullReset": false,
-    },
-    {
-      // capabilities for local Appium web tests on an iOS Emulator
+    }
+
+    const iosCapabilities = {
       "platformName": "iOS",
       "appium:platformVersion": "18.2",
       "appium:deviceName": "iPhone 16 Pro",
@@ -85,8 +87,12 @@ export const config: WebdriverIO.Config = {
       "appium:bundleId": "com.studioapp",
       "appium:noReset": true,
       "appium:fullReset": false,
-    },
-  ],
+    }
+
+    if (platform === "android") return [androidCapabilities]
+    if (platform === "ios") return [iosCapabilities]
+    return [androidCapabilities, iosCapabilities]
+  })(),
 
   //
   // ===================
